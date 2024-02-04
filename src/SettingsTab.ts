@@ -15,8 +15,8 @@ export class SettingsTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName("Wrike Access Token")
-			.setDesc("Use this token to authenticate with Wrike's API.")
+			.setName("Todoist Access Token")
+			.setDesc("Use this token to authenticate with Todoist's API.")
 			.addText((text) =>
 				text
 					.setPlaceholder("Enter your auth token")
