@@ -18,7 +18,7 @@ export class TodoistSyncPlugin extends Plugin {
 		}
 
 		const todoist = new TodoistApi(this.settings.accessToken);
-		const pluginApi = new PluginApi(todoist, this.app);
+		const pluginApi = new PluginApi(todoist, this.app, this.settings);
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new SettingsTab(this.app, this));
 		this.registerMarkdownCodeBlockProcessor(
@@ -31,6 +31,12 @@ export class TodoistSyncPlugin extends Plugin {
 				pluginApi.processQuery(code, el, ctx);
 			}
 		);
+
+		this.addRibbonIcon("dice", "Sample Plugin", (evt: MouseEvent) => {
+			// Called when the user clicks the icon.
+			// pluginApi.processQuery("", undefined, undefined);
+			pluginApi.readSync();
+		});
 	}
 
 	onunload() {}
