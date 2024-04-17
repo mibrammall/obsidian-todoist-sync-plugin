@@ -1,12 +1,16 @@
-import { STask } from "obsidian-dataview";
 import { createRoot, Container } from "react-dom/client";
+import { TaskCsvRow } from "src/Models";
 
-export function renderTasks(element: Container, taskList: STask[]) {
+export function renderTasks(element: Container, taskList: TaskCsvRow[]) {
 	const root = createRoot(element);
 	console.log(taskList);
-	root.render(<Task />);
+	root.render(<TaskList taskList={taskList} />);
 }
 
-export function Task(_: STask) {
+export function TaskList({ taskList }: { taskList: TaskCsvRow[] }) {
+	return <></>;
+}
+
+export function Task(_: TaskCsvRow) {
 	return <h1>Hello</h1>;
 }

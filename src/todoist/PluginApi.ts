@@ -1,8 +1,8 @@
-import { TodoistApi } from "@doist/todoist-api-typescript";
 import { App, TFile } from "obsidian";
 import { Settings } from "src/Settings";
-import { DataviewApi, getAPI, STask } from "obsidian-dataview";
+import { DataviewApi, getAPI } from "obsidian-dataview";
 import { renderTasks } from "src/ui/TaskElement";
+import { TaskCsvRow } from "src/Models";
 const SYNC_ENDPOINT = "https://api.todoist.com/sync/v9/sync";
 
 export type Literal =
@@ -45,27 +45,13 @@ function csvRowListToCsvString(rows: TaskCsvRow[]) {
 	return header + rowsString.join("");
 }
 
-interface TaskCsvRow {
-	id: string;
-	completed: boolean;
-	completedAt?: string;
-	dateCreated: string;
-	content: string;
-	projectName: string;
-	sectionName: string;
-	dueDate?: string;
-	isRecurring: boolean;
-}
-
 const filename = "Tasks.csv";
 export class PluginApi {
-	private api: TodoistApi;
 	private app: App;
 	private settings: Settings;
 	private dv: DataviewApi = getAPI();
 
-	public constructor(api: TodoistApi, app: App, settings: Settings) {
-		this.api = api;
+	public constructor(app: App, settings: Settings) {
 		this.app = app;
 		this.settings = settings;
 	}
@@ -129,27 +115,11 @@ export class PluginApi {
 		}
 	}
 
-	async renderQuery(query: string, element: HTMLElement) {
+	async renderQuery(_: string, element: HTMLElement) {
 		const { value: result }: { value: TaskCsvRow[] } =
 			await this.dv.index.csv.get(filename);
 
-		const taskList: STask[] = [];
-
-		console.log(result);
-
-		for (const task of result) {
-			const stask: STask = {
-				created: task.dateCreated,
-				modified: new Date(),
-				children: [],
-				task: true,
-				text: task.content,
-				path: "TodoistTasks",
-			};
-			taskList.push(stask);
-		}
-
-		return renderTasks(element, taskList);
+		return renderTasks(element, result);
 	}
 }
 
