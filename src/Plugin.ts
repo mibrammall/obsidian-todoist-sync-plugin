@@ -28,7 +28,7 @@ export class TodoistSyncPlugin extends Plugin {
 				el: HTMLElement,
 				ctx: MarkdownPostProcessorContext
 			) => {
-				pluginApi.processQuery(code, el, ctx);
+				pluginApi.renderQuery(code, el);
 			}
 		);
 
