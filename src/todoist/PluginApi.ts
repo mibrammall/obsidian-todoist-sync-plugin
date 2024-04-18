@@ -5,17 +5,6 @@ import { renderTasks } from "src/ui/TaskElement";
 import { TaskCsvRow } from "src/Models";
 const SYNC_ENDPOINT = "https://api.todoist.com/sync/v9/sync";
 
-export type Literal =
-	| boolean
-	| number
-	| string
-	| Array<Literal>
-	| null
-	| HTMLElement;
-
-export type GroupElement<T> = { key: Literal; rows: Grouping<T> };
-export type Grouping<T> = T[] | GroupElement<T>[];
-
 function syncProjectListToDictionary(projects: SyncProject[]) {
 	const projectDictionary: Record<string, SyncProject> = {};
 
