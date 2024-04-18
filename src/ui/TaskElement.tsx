@@ -8,9 +8,16 @@ export function renderTasks(element: Container, taskList: TaskCsvRow[]) {
 }
 
 export function TaskList({ taskList }: { taskList: TaskCsvRow[] }) {
-	return <></>;
+	return (
+		<>
+			{taskList.map((task) => (
+				<Task task={task} key={task.id} />
+			))}
+		</>
+	);
 }
 
-export function Task(_: TaskCsvRow) {
-	return <h1>Hello</h1>;
+export function Task({ task }: { task: TaskCsvRow }) {
+	const isString = typeof task.content === "string";
+	return <div>{isString ? task.content : task.content.path}</div>;
 }
