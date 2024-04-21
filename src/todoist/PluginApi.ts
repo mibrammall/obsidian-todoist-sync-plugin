@@ -1,6 +1,7 @@
 import { App, TFile } from "obsidian";
 import { Settings } from "src/Settings";
-import { DataviewApi, getAPI } from "obsidian-dataview";
+import { DateTime } from "luxon";
+import { DataviewApi, STask, getAPI } from "obsidian-dataview";
 import { renderTasks } from "src/ui/TaskElement";
 import { TaskCsvRow } from "src/Models";
 import { SYNC_ENDPOINT, TASKS_FILENAME } from "./Constants";
@@ -110,16 +111,28 @@ export class PluginApi {
 	}
 
 	async renderQuery(_: string, element: HTMLElement) {
-		const { value: result }: { value: TaskCsvRow[] } =
+		const { value: queryResult }: { value: TaskCsvRow[] } =
 			await this.dv.index.csv.get(TASKS_FILENAME);
+		const todoistTasks = queryResult.map(convertTaskToSTask);
 		const dvTasks = await getDataviewTasks({
-			date: "2024-04-12",
+			date: "2024-04-18",
 			filter: OrderedFilter.EQ,
 			includeCompleted: false,
 		});
-		console.log(dvTasks);
-		return renderTasks(element, result);
+
+		const combinedTasks = dvTasks.concat(todoistTasks);
+
+		return renderTasks(element, combinedTasks);
 	}
+}
+
+function convertTaskToSTask(task: TaskCsvRow): STask {
+	return {
+		annotated: true,
+		due: DateTime.fromISO(task.dueDate ?? ""),
+		text: task.content,
+		tags: ["#todo"],
+	};
 }
 
 interface SyncProject {

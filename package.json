@@ -13,12 +13,14 @@
 	"license": "MIT",
 	"dependencies": {
 		"@doist/todoist-api-typescript": "^3.0.2",
+		"luxon": "^3.4.4",
 		"obsidian": "latest",
 		"obsidian-dataview": "^0.5.66",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},
 	"devDependencies": {
+		"@types/luxon": "^3.4.2",
 		"@types/node": "^16.11.6",
 		"@types/react-dom": "^18.2.25",
 		"@typescript-eslint/eslint-plugin": "5.29.0",

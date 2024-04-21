@@ -7,14 +7,14 @@ export interface GetTasksProps {
 	filter?: OrderedFilter;
 }
 
-export async function getDataviewTasks(props: GetTasksProps): Promise<STask> {
+export async function getDataviewTasks(props: GetTasksProps): Promise<STask[]> {
 	const api = getAPI();
 
 	const query = buildQuery(props);
 
 	const tasks = await api.query(query);
 
-	return tasks;
+	return tasks.value.values;
 }
 
 function buildQuery(props: GetTasksProps) {
@@ -26,7 +26,6 @@ function buildQuery(props: GetTasksProps) {
 		query += " AND !completed";
 	}
 
-	console.log(query);
 	return query;
 }
 

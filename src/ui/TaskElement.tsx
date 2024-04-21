@@ -18,7 +18,6 @@ export function TaskList({ taskList }: { taskList: STask[] }) {
 }
 
 export function Task({ task }: { task: STask }) {
-	const checked = false;
 	const onClicked = () => {};
 	const onChecked = () => {};
 	const onChanged = () => {};
@@ -26,20 +25,19 @@ export function Task({ task }: { task: STask }) {
 	return (
 		<li
 			className={
-				"dataview task-list-item" + (checked ? " is-checked" : "")
+				"dataview task-list-item" + (task.checked ? " is-checked" : "")
 			}
 			onClick={onClicked}
-			// data-task={item.status}
+			data-task={task.status}
 		>
 			<input
 				className="dataview task-list-item-checkbox"
 				type="checkbox"
-				checked={checked}
+				checked={task.checked}
 				onChange={onChanged}
 				onClick={onChecked}
 			/>
-			{isString ? task.content : task.content.path}
+			{isString ? task.visual : task.text}
 		</li>
 	);
-	return <div></div>;
 }
