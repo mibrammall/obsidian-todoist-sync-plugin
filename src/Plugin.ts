@@ -20,7 +20,7 @@ export class TodoistSyncPlugin extends Plugin {
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new SettingsTab(this.app, this));
 		this.registerMarkdownCodeBlockProcessor(
-			"todoist-query",
+			"tasks-query",
 			(code: string, el: HTMLElement) => {
 				pluginApi.renderQuery(code, el);
 			}

@@ -110,11 +110,11 @@ export class PluginApi {
 		}
 	}
 
-	async renderQuery(_: string, element: HTMLElement) {
+	async renderQuery(query: string, element: HTMLElement) {
 		const { value: queryResult }: { value: TaskCsvRow[] } =
 			await this.dv.index.csv.get(TASKS_FILENAME);
 		const todoistTasks = queryResult.map(convertTaskToSTask);
-		const dvTasks = await getDataviewTasks({
+		const dvTasks = await getDataviewTasks(this.dv, {
 			date: "2024-04-18",
 			filter: OrderedFilter.EQ,
 			includeCompleted: false,

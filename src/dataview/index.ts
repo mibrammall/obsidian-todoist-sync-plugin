@@ -1,4 +1,4 @@
-import { STask, getAPI } from "obsidian-dataview";
+import { DataviewApi, STask } from "obsidian-dataview";
 import { OrderedFilter } from "./Models";
 
 export interface GetTasksProps {
@@ -7,9 +7,10 @@ export interface GetTasksProps {
 	filter?: OrderedFilter;
 }
 
-export async function getDataviewTasks(props: GetTasksProps): Promise<STask[]> {
-	const api = getAPI();
-
+export async function getDataviewTasks(
+	api: DataviewApi,
+	props: GetTasksProps
+): Promise<STask[]> {
 	const query = buildQuery(props);
 
 	const tasks = await api.query(query);
