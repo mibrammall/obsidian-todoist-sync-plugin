@@ -1,10 +1,11 @@
 import { App, TFile } from "obsidian";
 import { Settings } from "src/Settings";
-import { DataviewApi, STask, getAPI } from "obsidian-dataview";
+import { DataviewApi, getAPI } from "obsidian-dataview";
 import { renderTasks } from "src/ui/TaskElement";
 import { TaskCsvRow } from "src/Models";
-import { TASKS_FILENAME } from "./Constants";
-const SYNC_ENDPOINT = "https://api.todoist.com/sync/v9/sync";
+import { SYNC_ENDPOINT, TASKS_FILENAME } from "./Constants";
+import { getDataviewTasks } from "src/dataview";
+import { OrderedFilter } from "src/dataview/Models";
 
 function syncProjectListToDictionary(projects: SyncProject[]) {
 	const projectDictionary: Record<string, SyncProject> = {};
@@ -68,10 +69,6 @@ export class PluginApi {
 		const sectionLookup = syncSectionToDictionary(json.sections);
 		console.log(items);
 
-		const task: STask = {};
-
-		task;
-
 		const itemList = items.map((item) => {
 			const project = projectLookup[item.project_id];
 			const projectName = project ? project.name : "No project";
@@ -115,7 +112,12 @@ export class PluginApi {
 	async renderQuery(_: string, element: HTMLElement) {
 		const { value: result }: { value: TaskCsvRow[] } =
 			await this.dv.index.csv.get(TASKS_FILENAME);
-
+		const dvTasks = await getDataviewTasks({
+			date: "2024-04-12",
+			filter: OrderedFilter.EQ,
+			includeCompleted: false,
+		});
+		console.log(dvTasks);
 		return renderTasks(element, result);
 	}
 }
