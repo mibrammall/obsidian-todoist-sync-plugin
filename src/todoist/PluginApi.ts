@@ -3,10 +3,9 @@ import { Settings } from "src/Settings";
 import { DateTime } from "luxon";
 import { DataviewApi, STask, getAPI } from "obsidian-dataview";
 import { renderTasks } from "src/ui/TaskElement";
-import { TaskCsvRow } from "src/Models";
+import { GetTasksQuery, TaskCsvRow } from "src/Models";
 import { SYNC_ENDPOINT, TASKS_FILENAME } from "./Constants";
 import { getDataviewTasks } from "src/dataview";
-import { OrderedFilter } from "src/dataview/Models";
 
 function syncProjectListToDictionary(projects: SyncProject[]) {
 	const projectDictionary: Record<string, SyncProject> = {};
@@ -110,20 +109,21 @@ export class PluginApi {
 		}
 	}
 
-	async renderQuery(query: string, element: HTMLElement) {
-		const { value: queryResult }: { value: TaskCsvRow[] } =
-			await this.dv.index.csv.get(TASKS_FILENAME);
-		const todoistTasks = queryResult.map(convertTaskToSTask);
-		const dvTasks = await getDataviewTasks(this.dv, {
-			date: "2024-04-18",
-			filter: OrderedFilter.EQ,
-			includeCompleted: false,
-		});
+	async renderQuery(queryAsString: string, element: HTMLElement) {
+		const query: GetTasksQuery = JSON.parse(queryAsString);
+		const todoistTasks = await getTodoistTasks(this.dv, query);
+		const dvTasks = await getDataviewTasks(this.dv, query);
 
 		const combinedTasks = dvTasks.concat(todoistTasks);
 
 		return renderTasks(element, combinedTasks);
 	}
+}
+
+async function getTodoistTasks(api: DataviewApi, query: GetTasksQuery) {
+	const { value: queryResult }: { value: TaskCsvRow[] } =
+		await api.index.csv.get(TASKS_FILENAME);
+	return queryResult.map(convertTaskToSTask);
 }
 
 function convertTaskToSTask(task: TaskCsvRow): STask {

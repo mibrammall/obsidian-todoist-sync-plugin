@@ -1,15 +1,9 @@
 import { DataviewApi, STask } from "obsidian-dataview";
-import { OrderedFilter } from "./Models";
-
-export interface GetTasksProps {
-	date: string;
-	includeCompleted?: boolean;
-	filter?: OrderedFilter;
-}
+import { GetTasksQuery, OrderedFilter } from "src/Models";
 
 export async function getDataviewTasks(
 	api: DataviewApi,
-	props: GetTasksProps
+	props: GetTasksQuery
 ): Promise<STask[]> {
 	const query = buildQuery(props);
 
@@ -18,7 +12,7 @@ export async function getDataviewTasks(
 	return tasks.value.values;
 }
 
-function buildQuery(props: GetTasksProps) {
+function buildQuery(props: GetTasksQuery) {
 	const { date, filter, includeCompleted } = props;
 	const filterOperator = getFilter(filter ?? OrderedFilter.EQ);
 	let query = `TASK WHERE due ${filterOperator} date(${date})`;
