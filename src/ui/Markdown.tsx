@@ -1,11 +1,9 @@
 import { App, Component, MarkdownRenderer } from "obsidian";
-import { FullIndex } from "obsidian-dataview";
 import React, { createContext } from "react";
 import { MouseEventHandler, useContext, useEffect, useRef } from "react";
 
 type DataviewInit = {
 	app: App;
-	index: FullIndex;
 	container: HTMLElement;
 };
 

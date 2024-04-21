@@ -1,8 +1,9 @@
 import { App, TFile } from "obsidian";
 import { Settings } from "src/Settings";
-import { DataviewApi, getAPI } from "obsidian-dataview";
+import { DataviewApi, STask, getAPI } from "obsidian-dataview";
 import { renderTasks } from "src/ui/TaskElement";
 import { TaskCsvRow } from "src/Models";
+import { TASKS_FILENAME } from "./Constants";
 const SYNC_ENDPOINT = "https://api.todoist.com/sync/v9/sync";
 
 function syncProjectListToDictionary(projects: SyncProject[]) {
@@ -34,7 +35,6 @@ function csvRowListToCsvString(rows: TaskCsvRow[]) {
 	return header + rowsString.join("");
 }
 
-const filename = "Tasks.csv";
 export class PluginApi {
 	private app: App;
 	private settings: Settings;
@@ -66,6 +66,11 @@ export class PluginApi {
 
 		const projectLookup = syncProjectListToDictionary(projects);
 		const sectionLookup = syncSectionToDictionary(json.sections);
+		console.log(items);
+
+		const task: STask = {};
+
+		task;
 
 		const itemList = items.map((item) => {
 			const project = projectLookup[item.project_id];
@@ -74,6 +79,7 @@ export class PluginApi {
 			const isRecurring = item.due?.is_recurring || false;
 			const section = sectionLookup[item.section_id];
 			const sectionName = section ? section.name : "No section";
+
 			return {
 				id: item.id,
 				content: item.content,
@@ -88,25 +94,27 @@ export class PluginApi {
 
 		const csv = csvRowListToCsvString(itemList);
 
-		const file = this.app.vault.getAbstractFileByPath(filename) as TFile;
+		const file = this.app.vault.getAbstractFileByPath(
+			TASKS_FILENAME
+		) as TFile;
 
 		if (!file) {
 			console.log("Creating file");
 			console.log(csv);
 			try {
-				await this.app.vault.create(filename, csv);
+				await this.app.vault.create(TASKS_FILENAME, csv);
 			} catch (e) {
 				console.log(e);
 			}
 		} else {
 			console.log("Updating file");
-			this.app.vault.modify(file, csv);
+			await this.app.vault.modify(file, csv);
 		}
 	}
 
 	async renderQuery(_: string, element: HTMLElement) {
 		const { value: result }: { value: TaskCsvRow[] } =
-			await this.dv.index.csv.get(filename);
+			await this.dv.index.csv.get(TASKS_FILENAME);
 
 		return renderTasks(element, result);
 	}
@@ -140,7 +148,7 @@ interface SyncItem {
 	child_order: number;
 	content: string;
 	added_at: string;
-	completed_at: string;
+	completed_at?: string;
 	due: DueDate;
 	id: string;
 	in_history: number;

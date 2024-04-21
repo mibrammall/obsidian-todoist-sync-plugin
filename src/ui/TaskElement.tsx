@@ -1,13 +1,13 @@
+import { STask } from "obsidian-dataview";
 import { createRoot, Container } from "react-dom/client";
-import { TaskCsvRow } from "src/Models";
 
-export function renderTasks(element: Container, taskList: TaskCsvRow[]) {
+export function renderTasks(element: Container, taskList: STask[]) {
 	const root = createRoot(element);
 	console.log(taskList);
 	root.render(<TaskList taskList={taskList} />);
 }
 
-export function TaskList({ taskList }: { taskList: TaskCsvRow[] }) {
+export function TaskList({ taskList }: { taskList: STask[] }) {
 	return (
 		<ul className="contains-task-list">
 			{taskList.map((task) => (
@@ -17,7 +17,7 @@ export function TaskList({ taskList }: { taskList: TaskCsvRow[] }) {
 	);
 }
 
-export function Task({ task }: { task: TaskCsvRow }) {
+export function Task({ task }: { task: STask }) {
 	const checked = false;
 	const onClicked = () => {};
 	const onChecked = () => {};
